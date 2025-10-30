@@ -43,6 +43,7 @@ for cal_id in calendar_ids:
         singleEvents=True,
         orderBy='startTime'
     ).execute()
+    print(len(events_result))
     
     for event in events_result.get('items', []):
         # Événements horaires
