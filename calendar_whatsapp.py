@@ -52,6 +52,8 @@ for cal_id in calendar_ids:
             end_dt = datetime.fromisoformat(event['end']['dateTime'].replace('Z', '+00:00')).astimezone(PARIS)
             if start_dt.date() == today:
                 all_events.append((start_dt, event))
+                print(event)
+            
         else:
             # Événements "toute la journée"
             start_dt = datetime.combine(datetime.fromisoformat(event['start']['date']).date(), datetime.min.time(), tzinfo=PARIS)
