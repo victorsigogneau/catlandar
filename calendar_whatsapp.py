@@ -27,8 +27,11 @@ all_events = []
 
 calendar_list = service.calendarList().list().execute()
 print('CALENDRIER')
+calendar_list = service.calendarList().list().execute()
+print("Calendriers accessibles :")
 for cal in calendar_list['items']:
     print(cal['summary'], "→", cal['id'])
+
 print('fin calendrier')
 
 for cal_id in calendar_ids:
