@@ -2,7 +2,7 @@ name: Daily WhatsApp Reminder
 
 on:
   schedule:
-    - cron: '0 7 * * *'  # tous les jours à 07h UTC (8h heure de Paris)
+    - cron: '0 7 * * *'  # tous les jours à 07h UTC (08h Paris)
   workflow_dispatch:
 
 jobs:
@@ -21,10 +21,14 @@ jobs:
       - name: Install dependencies
         run: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib twilio
 
+      # Crée correctement le fichier JSON depuis le secret
       - name: Create service account file
-        run: echo "${{ secrets.SERVICE_ACCOUNT_JSON }}" > service-account.json
+        run: |
+          cat <<EOF > service-account.json
+          ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          EOF
 
-      - name: Run script
+      - name: Run Python script
         env:
           TWILIO_SID: ${{ secrets.TWILIO_SID }}
           TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
