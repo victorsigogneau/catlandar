@@ -1,11 +1,8 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from googleapiclient.discovery import build
 from google.oauth2 import service_account
 from twilio.rest import Client
 import os
-
-# --- Fuseau horaire Paris ---
-PARIS = timezone(timedelta(hours=2))  # UTC+2 pour l'heure d'été/hiver, ajuster si besoin
 
 # --- Google Calendar ---
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
@@ -15,13 +12,15 @@ creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('calendar', 'v3', credentials=creds)
 
-# Plage horaire : aujourd'hui Paris
-now = datetime.now(PARIS).isoformat()
-end_of_day = (datetime.now(PARIS) + timedelta(days=1)).isoformat()
+# Plage horaire : aujourd'hui UTC
+now = datetime.utcnow().isoformat() + 'Z'
+end_of_day = (datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z'
 
-# --- Récupération de tous les calendriers accessibles ---
-calendar_list = service.calendarList().list().execute()
-calendar_ids = [cal['id'] for cal in calendar_list['items']]
+# Liste des IDs de calendriers à récupérer
+calendar_ids = [
+    'victor.sigogneau19@gmail.com',                      # ton calendrier principal
+    'catlandar@catlendar-476720.iam.gserviceaccount.com' # calendrier partagé
+]
 
 all_events = []
 
@@ -35,14 +34,14 @@ for cal_id in calendar_ids:
     ).execute()
     all_events.extend(events_result.get('items', []))
 
-# Trier tous les événements par heure (ou date pour all-day)
-def get_start_time(event):
+# Trier tous les événements par date/heure
+def get_start(event):
     if 'dateTime' in event['start']:
         return datetime.fromisoformat(event['start']['dateTime'].replace('Z', '+00:00'))
     else:
         return datetime.fromisoformat(event['start']['date'])
 
-all_events.sort(key=get_start_time)
+all_events.sort(key=get_start)
 
 # --- Formater le message ---
 if not all_events:
@@ -50,9 +49,8 @@ if not all_events:
 else:
     message_body = "🗓️ Événements du jour :\n"
     for event in all_events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
         if 'dateTime' in event['start']:
-            start_time = datetime.fromisoformat(start.replace('Z', '+00:00')).astimezone(PARIS).strftime('%H:%M')
+            start_time = datetime.fromisoformat(event['start']['dateTime'].replace('Z', '+00:00')).strftime('%H:%M')
         else:
             start_time = "Toute la journée"
         message_body += f"- {start_time} ({event.get('summary', '(sans titre)')})\n"
