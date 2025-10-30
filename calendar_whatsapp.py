@@ -18,7 +18,8 @@ end_of_day = (datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z'
 
 # Liste des IDs de calendriers à récupérer
 calendar_ids = [
-    'victor.sigogneau19@gmail.com',                     # calendrier principal     # calendrier partagé 2
+    'victor.sigogneau19@gmail.com',
+    'catlandar@catlendar-476720.iam.gserviceaccount.com'# calendrier principal     # calendrier partagé 2
     # ajoute autant que nécessaire
 ]
 
