@@ -47,6 +47,8 @@ for cal_id in calendar_ids:
     ).execute()
     
     for event in events_result.get('items', []):
+        print('event', event)
+        
         # Événements horaires
         if 'dateTime' in event['start']:
             start_dt = datetime.fromisoformat(event['start']['dateTime'].replace('Z', '+00:00')).astimezone(PARIS)
