@@ -60,6 +60,7 @@ for cal_id in calendar_ids:
             end_dt = datetime.combine(datetime.fromisoformat(event['end']['date']).date(), datetime.min.time(), tzinfo=PARIS)
             if start_dt.date() <= today < end_dt.date():
                 all_events.append((start_dt, event))
+                print(event)
 
 # --- Trier tous les événements ---
 all_events.sort(key=lambda x: x[0])
