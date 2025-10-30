@@ -12,28 +12,48 @@ creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 service = build('calendar', 'v3', credentials=creds)
 
+# Plage horaire : aujourd'hui UTC
 now = datetime.utcnow().isoformat() + 'Z'
 end_of_day = (datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z'
 
-events_result = service.events().list(
-    calendarId='primary', timeMin=now, timeMax=end_of_day,
-    singleEvents=True, orderBy='startTime').execute()
-events = events_result.get('items', [])
+# Liste des IDs de calendriers à récupérer
+calendar_ids = [
+    'ton-principal@gmail.com',                     # calendrier principal
+    'abcdef123456@group.calendar.google.com',     # calendrier partagé 1
+    'ghijkl789012@group.calendar.google.com'      # calendrier partagé 2
+    # ajoute autant que nécessaire
+]
 
-if not events:
+all_events = []
+
+for cal_id in calendar_ids:
+    events_result = service.events().list(
+        calendarId=cal_id,
+        timeMin=now,
+        timeMax=end_of_day,
+        singleEvents=True,
+        orderBy='startTime'
+    ).execute()
+    all_events.extend(events_result.get('items', []))
+
+# Trier tous les événements par heure
+all_events.sort(key=lambda x: x['start'].get('dateTime', x['start'].get('date')))
+
+# --- Formater le message ---
+if not all_events:
     message_body = "📅 Aucun événement prévu aujourd'hui."
 else:
     message_body = "🗓️ Événements du jour :\n"
-    for event in events:
+    for event in all_events:
         start = event['start'].get('dateTime', event['start'].get('date'))
         start_time = datetime.fromisoformat(start.replace('Z', '+00:00')).strftime('%H:%M')
-        message_body += f"- {start_time} : {event.get('summary', '(sans titre)')}\n"
+        message_body += f"- {start_time} ({event.get('summary', '(sans titre)')})\n"
 
 # --- Twilio WhatsApp ---
 account_sid = os.getenv('TWILIO_SID')
 auth_token = os.getenv('TWILIO_TOKEN')
 to_number = os.getenv('TO_WHATSAPP')
-from_number = 'whatsapp:+14155238886'  # numéro Twilio Sandbox
+from_number = 'whatsapp:+14155238886'  # Twilio sandbox
 
 client = Client(account_sid, auth_token)
 
