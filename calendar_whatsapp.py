@@ -25,7 +25,7 @@ calendar_ids = [
     '2cd905ae0f6e225a595d1b06b13b6902a3afc91fbe489265cc00ba066fac219a@group.calendar.google.com',
     '1957d73f2419f757b75b2d3c190b271deb4cd7c0824023a0a1716369352379cf@group.calendar.google.com',
     'ece46e97d1561024e460d5343310343769d2152f0ed6217c67be20f0698110f9@group.calendar.google.com',
-    #'7b1a7fe70fcd4175525a4a0ed3ac56d2ecb5d90e57106d16c32ead7cfe0ec2a0@group.calendar.google.com'
+    '7b1a7fe70fcd4175525a4a0ed3ac56d2ecb5d90e57106d16c32ead7cfe0ec2a0@group.calendar.google.com'
 ]
 
 all_events = []
