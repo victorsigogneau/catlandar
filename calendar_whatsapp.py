@@ -29,7 +29,7 @@ calendar_list = service.calendarList().list().execute()
 print('CALENDRIER')
 for cal in calendar_list['items']:
     print(cal['summary'], "→", cal['id'])
-print('fin calendrier
+print('fin calendrier')
 
 for cal_id in calendar_ids:
     events_result = service.events().list(
