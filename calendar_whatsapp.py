@@ -25,6 +25,11 @@ calendar_ids = [
 
 all_events = []
 
+calendar_list = service.calendarList().list().execute()
+for cal in calendar_list['items']:
+    print(cal['summary'], "→", cal['id'])
+
+
 for cal_id in calendar_ids:
     events_result = service.events().list(
         calendarId=cal_id,
