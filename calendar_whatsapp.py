@@ -18,9 +18,7 @@ end_of_day = (datetime.utcnow() + timedelta(days=1)).isoformat() + 'Z'
 
 # Liste des IDs de calendriers à récupérer
 calendar_ids = [
-    'ton-principal@gmail.com',                     # calendrier principal
-    'abcdef123456@group.calendar.google.com',     # calendrier partagé 1
-    'ghijkl789012@group.calendar.google.com'      # calendrier partagé 2
+    'victor.sigogneau19@gmail.com',                     # calendrier principal     # calendrier partagé 2
     # ajoute autant que nécessaire
 ]
 
