@@ -33,7 +33,7 @@ else:
 account_sid = os.getenv('TWILIO_SID')
 auth_token = os.getenv('TWILIO_TOKEN')
 to_number = os.getenv('TO_WHATSAPP')
-from_number = 'whatsapp:+14155238886'  # Twilio sandbox
+from_number = 'whatsapp:+14155238886'  # numéro Twilio Sandbox
 
 client = Client(account_sid, auth_token)
 
