@@ -14,8 +14,6 @@ service = build('calendar', 'v3', credentials=creds)
 
 # --- Fuseau horaire Paris ---
 PARIS = timezone(timedelta(hours=2))
-
-# Aujourd'hui
 today = datetime.now(PARIS).date()
 
 # --- Liste complète des IDs de calendriers ---
@@ -38,7 +36,7 @@ print("Calendriers accessibles :")
 for cal in calendar_list['items']:
     print(cal['summary'], "→", cal['id'])
 
-# --- Récupérer les événements ---
+# --- Récupérer tous les événements ---
 for cal_id in calendar_ids:
     events_result = service.events().list(
         calendarId=cal_id,
@@ -47,8 +45,6 @@ for cal_id in calendar_ids:
     ).execute()
     
     for event in events_result.get('items', []):
-        print('event', event)
-        
         # Événements horaires
         if 'dateTime' in event['start']:
             start_dt = datetime.fromisoformat(event['start']['dateTime'].replace('Z', '+00:00')).astimezone(PARIS)
@@ -65,7 +61,7 @@ for cal_id in calendar_ids:
 # --- Trier tous les événements ---
 all_events.sort(key=lambda x: x[0])
 
-# --- Formater le message ---
+# --- Formater le message WhatsApp ---
 if not all_events:
     message_body = "📅 Aucun événement prévu aujourd'hui."
 else:
@@ -75,7 +71,8 @@ else:
             start_time = dt.strftime('%H:%M')
         else:
             start_time = "Toute la journée"
-        message_body += f"- {start_time} ({event.get('summary', '(sans titre)')})\n"
+        calendar_name = event.get('organizer', {}).get('email', 'Calendrier inconnu')
+        message_body += f"- {start_time} ({event.get('summary', '(sans titre)')}) | {calendar_name}\n"
 
 # --- Twilio WhatsApp ---
 account_sid = os.getenv('TWILIO_SID')
